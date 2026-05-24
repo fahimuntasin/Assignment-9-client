@@ -85,14 +85,12 @@ export default function Navbar() {
               <div className="h-8 w-20 animate-pulse rounded bg-muted" />
             ) : user ? (
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 flex items-center gap-2 px-2">
+                <DropdownMenuTrigger className="relative h-8 flex items-center gap-2 px-2 hover:bg-accent rounded-md transition-colors cursor-pointer">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.photoURL || ""} />
                       <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <span className="text-sm">{user.name.split(" ")[0]}</span>
-                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem onClick={() => router.push("/dashboard/requests")}>

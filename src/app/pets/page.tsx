@@ -68,7 +68,7 @@ export default function AllPetsPage() {
           <Button type="submit">Search</Button>
         </form>
 
-        <Select value={species} onValueChange={setSpecies}>
+        <Select value={species} onValueChange={(v) => setSpecies(v || "all")}>
           <SelectTrigger className="w-full sm:w-44">
             <SlidersHorizontal className="h-4 w-4 mr-2" />
             <SelectValue placeholder="Filter species" />
