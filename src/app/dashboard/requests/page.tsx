@@ -64,7 +64,7 @@ export default function MyRequestsPage() {
         <div className="text-center py-16 text-muted-foreground">
           <p>No adoption requests yet.</p>
           <Link href="/pets">
-            <Button variant="outline" className="mt-4">
+            <Button variant="plastic" className="mt-4">
               Browse Pets
             </Button>
           </Link>

@@ -13,7 +13,7 @@ export default function NotFound() {
           Oops! The page you&apos;re looking for doesn&apos;t exist. It might have been moved or deleted.
         </p>
         <Link href="/">
-          <Button size="lg" className="gap-2">
+          <Button variant="plastic" size="lg" className="gap-2">
             <Home className="h-5 w-5" />
             Back to Home
           </Button>

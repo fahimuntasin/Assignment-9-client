@@ -112,7 +112,7 @@ export default function LoginPage() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading} variant="plastic">
               {loading ? "Signing in..." : "Login"}
             </Button>
           </form>
@@ -128,7 +128,7 @@ export default function LoginPage() {
 
           <Button
             type="button"
-            variant="outline"
+            variant="plastic"
             className="w-full gap-2"
             disabled={googleLoading}
             onClick={handleGoogleLogin}

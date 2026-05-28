@@ -205,6 +205,7 @@ export default function PetDetailsPage() {
                   </div>
                   <Button
                     type="submit"
+                    variant="plastic"
                     className="w-full gap-2"
                     disabled={submitting}
                     onClick={handleAdoptClick}

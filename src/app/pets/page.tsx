@@ -65,7 +65,7 @@ export default function AllPetsPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <Button type="submit">Search</Button>
+          <Button type="submit" variant="plastic">Search</Button>
         </form>
 
         <Select value={species} onValueChange={(v) => setSpecies(v || "all")}>

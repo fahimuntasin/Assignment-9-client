@@ -175,7 +175,7 @@ export default function RegisterPage() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading} variant="plastic">
               {loading ? "Creating account..." : "Register"}
             </Button>
           </form>
@@ -191,7 +191,7 @@ export default function RegisterPage() {
 
           <Button
             type="button"
-            variant="outline"
+            variant="plastic"
             className="w-full gap-2"
             disabled={googleLoading}
             onClick={handleGoogleLogin}

@@ -243,7 +243,7 @@ export default function AddPetPage() {
               />
             </div>
 
-            <Button type="submit" className="w-full sm:w-auto" disabled={loading}>
+            <Button type="submit" className="w-full sm:w-auto" disabled={loading} variant="plastic">
               {loading ? "Adding Pet..." : "Add Pet"}
             </Button>
           </form>

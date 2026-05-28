@@ -183,7 +183,7 @@ export default function MyListingsPage() {
         <div className="text-center py-16 text-muted-foreground">
           <p>No pet listings yet.</p>
           <Link href="/dashboard/add-pet">
-            <Button className="mt-4">Add Your First Pet</Button>
+            <Button className="mt-4" variant="plastic">Add Your First Pet</Button>
           </Link>
         </div>
       ) : (
@@ -217,7 +217,7 @@ export default function MyListingsPage() {
 
                 <div className="flex items-center gap-2 flex-wrap self-end sm:self-center">
                   <Button
-                    variant="outline"
+                    variant="plastic"
                     size="sm"
                     onClick={() => handleViewRequests(pet)}
                   >
@@ -225,7 +225,7 @@ export default function MyListingsPage() {
                     Requests
                   </Button>
                   <Button
-                    variant="outline"
+                    variant="plastic"
                     size="sm"
                     onClick={() => handleEditClick(pet)}
                   >
@@ -233,7 +233,7 @@ export default function MyListingsPage() {
                     Edit
                   </Button>
                   <Link href={`/pets/${pet._id}`}>
-                    <Button variant="outline" size="sm">
+                    <Button variant="plastic" size="sm">
                       <Eye className="h-4 w-4 mr-1" />
                       View
                     </Button>
@@ -384,7 +384,7 @@ export default function MyListingsPage() {
                 onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
               />
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" variant="plastic">
               Save Changes
             </Button>
           </form>
@@ -449,6 +449,7 @@ export default function MyListingsPage() {
                     <div className="flex gap-2 pt-2 border-t">
                       <Button
                         size="sm"
+                        variant="plastic"
                         onClick={() => handleApprove(req._id)}
                         className="flex-1"
                       >
@@ -456,7 +457,7 @@ export default function MyListingsPage() {
                       </Button>
                       <Button
                         size="sm"
-                        variant="outline"
+                        variant="plastic"
                         onClick={() => handleReject(req._id)}
                         className="flex-1"
                       >

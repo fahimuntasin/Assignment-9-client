@@ -69,7 +69,7 @@ export default function PetCard({ pet }: { pet: Pet }) {
 
         <CardFooter className="p-4 pt-0">
           <Link href={`/pets/${pet._id}`} className="w-full">
-            <Button variant="outline" className="w-full gap-2">
+            <Button variant="plastic" className="w-full gap-2">
               <Eye className="h-4 w-4" />
               View Details
             </Button>

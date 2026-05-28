@@ -54,7 +54,7 @@ export default function HomePage() {
                   </Button>
                 </Link>
                 <Link href="/register">
-                  <Button variant="outline" size="lg">
+                  <Button variant="plastic" size="lg">
                     Join Us
                   </Button>
                 </Link>
@@ -186,7 +186,7 @@ export default function HomePage() {
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">No pets available yet.</p>
               <Link href="/dashboard/add-pet">
-                <Button>Add a Pet</Button>
+                <Button variant="plastic">Add a Pet</Button>
               </Link>
             </div>
           )}
@@ -194,7 +194,7 @@ export default function HomePage() {
           {featuredPets.length > 0 && (
             <div className="text-center mt-8">
               <Link href="/pets">
-                <Button variant="outline" size="lg">
+                <Button variant="plastic" size="lg">
                   View All Pets
                 </Button>
               </Link>
