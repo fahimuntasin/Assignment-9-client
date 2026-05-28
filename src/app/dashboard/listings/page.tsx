@@ -52,8 +52,9 @@ export default function MyListingsPage() {
     try {
       const { data } = await api.get("/pets/my-listings");
       setPets(data);
-    } catch {
-      toast.error("Failed to load listings");
+    } catch (err: any) {
+      toast.error("Failed to load listings: " + (err.response?.status || err.message));
+      console.error("Listings fetch error:", err.response?.status, err.response?.data, err.message);
     } finally {
       setLoading(false);
     }

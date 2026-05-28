@@ -18,8 +18,9 @@ export default function MyRequestsPage() {
     try {
       const { data } = await api.get("/requests/my");
       setRequests(data);
-    } catch {
-      toast.error("Failed to load requests");
+    } catch (err: any) {
+      toast.error("Failed to load requests: " + (err.response?.status || err.message));
+      console.error("Requests fetch error:", err.response?.status, err.response?.data, err.message);
     } finally {
       setLoading(false);
     }
