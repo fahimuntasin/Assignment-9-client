@@ -95,7 +95,7 @@ export default function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                onClick={() => { document.documentElement.classList.add('theme-transitioning'); setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 500); setTheme(theme === "dark" ? "light" : "dark"); }}
                 className="relative overflow-hidden hover:bg-muted/80"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-blue-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300" />
@@ -186,7 +186,7 @@ export default function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                onClick={() => { document.documentElement.classList.add('theme-transitioning'); setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 500); setTheme(theme === "dark" ? "light" : "dark"); }}
                 className="shrink-0"
               >
                 <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />

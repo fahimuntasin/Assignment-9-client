@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ImageWithFallback from "@/components/ImageWithFallback";
+import PawRipple from "@/components/PawRipple";
 import { MapPin, Eye } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -69,12 +70,14 @@ export default function PetCard({ pet }: { pet: Pet }) {
         </CardContent>
 
         <CardFooter className="p-4 pt-0">
-          <Link href={`/pets/${pet._id}`} className="w-full">
-            <Button variant="plastic" className="w-full gap-2">
-              <Eye className="h-4 w-4" />
-              View Details
-            </Button>
-          </Link>
+          <PawRipple className="w-full rounded-lg">
+            <Link href={`/pets/${pet._id}`} className="w-full">
+              <Button variant="plastic" className="w-full gap-2">
+                <Eye className="h-4 w-4" />
+                View Details
+              </Button>
+            </Link>
+          </PawRipple>
         </CardFooter>
       </Card>
     </motion.div>

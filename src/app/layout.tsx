@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Script from "next/script";
+import PawBackground from "@/components/PawBackground";
+import PetCursor from "@/components/PetCursor";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -36,8 +37,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <body className="min-h-screen flex flex-col bg-background text-foreground">
-        <Script src="https://accounts.google.com/gsi/client" strategy="lazyOnload" />
         <Providers>
+          <PawBackground />
+          <PetCursor />
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
