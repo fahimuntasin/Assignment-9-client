@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,62 +14,13 @@ import { toast } from "sonner";
 
 const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "1009595917225-f9tn17amnhnq7gk76tegp98h6jshk4h7.apps.googleusercontent.com";
 
-function decodeJwt(token: string) {
-  try {
-    const base64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-    return JSON.parse(atob(base64));
-  } catch {
-    return null;
-  }
-}
-
 export default function LoginPage() {
   const { login, googleLogin } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const google = (window as any).google;
-    if (!google?.accounts?.id) return;
-    google.accounts.id.initialize({
-      client_id: CLIENT_ID,
-      callback: async (response: any) => {
-        if (!response.credential) return;
-        const payload = decodeJwt(response.credential);
-        if (!payload) {
-          toast.error("Failed to verify Google credentials");
-          return;
-        }
-        try {
-          await googleLogin({
-            name: payload.name,
-            email: payload.email,
-            photoURL: payload.picture || "",
-            googleId: payload.sub,
-          });
-          router.push("/");
-        } catch (err: any) {
-          toast.error(err.response?.data?.message || "Google login failed");
-        }
-      },
-    });
-  }, [googleLogin, router]);
-
-  const handleGoogleLogin = useCallback(async () => {
-    const google = (window as any).google;
-    if (!google?.accounts?.id) {
-      toast.error("Google Sign-In is not available");
-      return;
-    }
-    google.accounts.id.prompt((moment: any) => {
-      if (moment.isNotDisplayed() || moment.isSkippedMoment()) {
-        toast.error("Google Sign-In popup was blocked. Please allow popups for this site.");
-      }
-    });
-    setTimeout(() => google.accounts.id.cancel(), 60000);
-  }, []);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,6 +33,49 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleLogin = async () => {
+    const oauth2 = (window as any).google?.accounts?.oauth2;
+    if (!oauth2) {
+      toast.error("Google Sign-In is loading. Please try again.");
+      return;
+    }
+
+    setGoogleLoading(true);
+    const tokenClient = oauth2.initTokenClient({
+      client_id: CLIENT_ID,
+      scope: "openid email profile",
+      callback: async (response: any) => {
+        if (response.error) {
+          setGoogleLoading(false);
+          toast.error(response.error_description || "Google Sign-In failed");
+          return;
+        }
+        try {
+          const userInfo = await fetch(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            { headers: { Authorization: `Bearer ${response.access_token}` } }
+          ).then((r) => r.json());
+          if (!userInfo.sub) {
+            toast.error("Could not retrieve Google profile");
+            return;
+          }
+          await googleLogin({
+            name: userInfo.name,
+            email: userInfo.email,
+            photoURL: userInfo.picture || "",
+            googleId: userInfo.sub,
+          });
+          router.push("/");
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || "Google login failed");
+        } finally {
+          setGoogleLoading(false);
+        }
+      },
+    });
+    tokenClient.requestAccessToken();
   };
 
   return (
@@ -136,10 +130,11 @@ export default function LoginPage() {
             type="button"
             variant="outline"
             className="w-full gap-2"
+            disabled={googleLoading}
             onClick={handleGoogleLogin}
           >
             <FcGoogle className="h-5 w-5" />
-            Google
+            {googleLoading ? "Connecting..." : "Google"}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
