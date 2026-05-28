@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Eye, X, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/lib/api";
+import ImageWithFallback from "@/components/ImageWithFallback";
 
 export default function MyRequestsPage() {
   const [requests, setRequests] = useState<any[]>([]);
@@ -50,8 +51,19 @@ export default function MyRequestsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      <div>
+        <h1 className="text-2xl font-bold mb-6">My Requests</h1>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="border rounded-lg p-5 flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-r from-muted via-muted/50 to-muted animate-[shimmer_1.5s_ease-in-out_infinite] bg-[length:200%_100%] rounded-lg" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-gradient-to-r from-muted via-muted/50 to-muted animate-[shimmer_1.5s_ease-in-out_infinite] bg-[length:200%_100%] rounded w-1/3" />
+                <div className="h-3 bg-gradient-to-r from-muted via-muted/50 to-muted animate-[shimmer_1.5s_ease-in-out_infinite] bg-[length:200%_100%] rounded w-1/4" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -76,7 +88,7 @@ export default function MyRequestsPage() {
               <CardContent className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 gap-4">
                 <div className="flex items-center gap-4">
                   {req.pet?.image && (
-                    <img
+                    <ImageWithFallback
                       src={req.pet.image}
                       alt={req.petName}
                       className="w-14 h-14 rounded-lg object-cover"

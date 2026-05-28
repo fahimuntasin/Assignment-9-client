@@ -22,6 +22,7 @@ export default function AddPetPage() {
   const { user } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: "",
     species: "",
@@ -38,19 +39,32 @@ export default function AddPetPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errors[e.target.name]) setErrors({ ...errors, [e.target.name]: "" });
   };
 
   const handleSelectChange = (name: string, value: string | null) => {
     setFormData({ ...formData, [name]: value || "" });
+    if (errors[name]) setErrors({ ...errors, [name]: "" });
+  };
+
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!formData.name.trim()) e.name = "Name is required";
+    if (!formData.species) e.species = "Species is required";
+    if (!formData.breed.trim()) e.breed = "Breed is required";
+    if (!formData.gender) e.gender = "Gender is required";
+    if (!formData.image.trim()) e.image = "Image URL is required";
+    if (!formData.location.trim()) e.location = "Location is required";
+    if (!formData.age || Number(formData.age) < 0) e.age = "Valid age is required";
+    if (!formData.description.trim()) e.description = "Description is required";
+    setErrors(e);
+    return Object.keys(e).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.species || !formData.breed || !formData.location) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
+    if (!validate()) return;
 
     setLoading(true);
     try {
@@ -86,8 +100,10 @@ export default function AddPetPage() {
                   placeholder="e.g. Buddy"
                   value={formData.name}
                   onChange={handleChange}
+                  className={errors.name ? "border-destructive" : ""}
                   required
                 />
+                {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
               </div>
 
               <div className="space-y-2">
@@ -96,7 +112,7 @@ export default function AddPetPage() {
                   value={formData.species}
                   onValueChange={(v) => handleSelectChange("species", v)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={errors.species ? "border-destructive" : ""}>
                     <SelectValue placeholder="Select species" />
                   </SelectTrigger>
                   <SelectContent>
@@ -109,6 +125,7 @@ export default function AddPetPage() {
                     <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.species && <p className="text-xs text-destructive">{errors.species}</p>}
               </div>
 
               <div className="space-y-2">
@@ -119,8 +136,10 @@ export default function AddPetPage() {
                   placeholder="e.g. Golden Retriever"
                   value={formData.breed}
                   onChange={handleChange}
+                  className={errors.breed ? "border-destructive" : ""}
                   required
                 />
+                {errors.breed && <p className="text-xs text-destructive">{errors.breed}</p>}
               </div>
 
               <div className="space-y-2">
@@ -133,8 +152,10 @@ export default function AddPetPage() {
                   placeholder="e.g. 2"
                   value={formData.age}
                   onChange={handleChange}
+                  className={errors.age ? "border-destructive" : ""}
                   required
                 />
+                {errors.age && <p className="text-xs text-destructive">{errors.age}</p>}
               </div>
 
               <div className="space-y-2">
@@ -143,7 +164,7 @@ export default function AddPetPage() {
                   value={formData.gender}
                   onValueChange={(v) => handleSelectChange("gender", v)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className={errors.gender ? "border-destructive" : ""}>
                     <SelectValue placeholder="Select gender" />
                   </SelectTrigger>
                   <SelectContent>
@@ -151,6 +172,7 @@ export default function AddPetPage() {
                     <SelectItem value="Female">Female</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.gender && <p className="text-xs text-destructive">{errors.gender}</p>}
               </div>
 
               <div className="space-y-2">
@@ -161,8 +183,10 @@ export default function AddPetPage() {
                   placeholder="https://imgbb.com/your-image.jpg"
                   value={formData.image}
                   onChange={handleChange}
+                  className={errors.image ? "border-destructive" : ""}
                   required
                 />
+                {errors.image && <p className="text-xs text-destructive">{errors.image}</p>}
               </div>
 
               <div className="space-y-2">
@@ -207,8 +231,10 @@ export default function AddPetPage() {
                   placeholder="e.g. New York, NY"
                   value={formData.location}
                   onChange={handleChange}
+                  className={errors.location ? "border-destructive" : ""}
                   required
                 />
+                {errors.location && <p className="text-xs text-destructive">{errors.location}</p>}
               </div>
 
               <div className="space-y-2">
@@ -239,8 +265,10 @@ export default function AddPetPage() {
                 rows={4}
                 value={formData.description}
                 onChange={handleChange}
+                className={errors.description ? "border-destructive" : ""}
                 required
               />
+              {errors.description && <p className="text-xs text-destructive">{errors.description}</p>}
             </div>
 
             <Button type="submit" className="w-full sm:w-auto" disabled={loading} variant="plastic">

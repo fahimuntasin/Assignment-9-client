@@ -33,6 +33,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/lib/api";
+import { TableSkeleton } from "@/components/Skeletons";
+import ImageWithFallback from "@/components/ImageWithFallback";
 
 export default function MyListingsPage() {
   const [pets, setPets] = useState<any[]>([]);
@@ -136,8 +138,9 @@ export default function MyListingsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      <div>
+        <h1 className="text-2xl font-bold mb-6">My Listings</h1>
+        <TableSkeleton rows={4} />
       </div>
     );
   }
@@ -191,7 +194,7 @@ export default function MyListingsPage() {
           {pets.map((pet) => (
             <Card key={pet._id}>
               <CardContent className="flex flex-col sm:flex-row items-start gap-4 p-4">
-                <img
+                <ImageWithFallback
                   src={pet.image}
                   alt={pet.name}
                   className="w-full sm:w-32 h-24 rounded-lg object-cover"

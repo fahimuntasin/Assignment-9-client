@@ -4,7 +4,8 @@ import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Heart, Eye } from "lucide-react";
+import ImageWithFallback from "@/components/ImageWithFallback";
+import { MapPin, Eye } from "lucide-react";
 import { motion } from "framer-motion";
 
 type Pet = {
@@ -29,7 +30,7 @@ export default function PetCard({ pet }: { pet: Pet }) {
     >
       <Card className="overflow-hidden group hover:shadow-lg transition-shadow duration-300">
         <div className="relative aspect-[4/3] overflow-hidden">
-          <img
+          <ImageWithFallback
             src={pet.image}
             alt={pet.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

@@ -10,27 +10,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal, PawPrint, AlertCircle } from "lucide-react";
 import PetCard from "@/components/PetCard";
+import { PetCardSkeleton } from "@/components/Skeletons";
 import api from "@/lib/api";
 
 export default function AllPetsPage() {
-  const [pets, setPets] = useState([]);
+  const [pets, setPets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [species, setSpecies] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
+  const [error, setError] = useState("");
 
   const fetchPets = async () => {
     setLoading(true);
+    setError("");
     try {
       const params: any = {};
-      if (search) params.search = search;
+      if (search.trim()) params.search = search.trim();
       if (species !== "all") params.species = species;
 
       const { data } = await api.get("/pets", { params });
-      setPets(data);
+      let sorted = [...data];
+      if (sortBy === "age_asc") sorted.sort((a: any, b: any) => a.age - b.age);
+      if (sortBy === "age_desc") sorted.sort((a: any, b: any) => b.age - a.age);
+      if (sortBy === "name") sorted.sort((a: any, b: any) => a.name.localeCompare(b.name));
+      if (sortBy === "fee_low") sorted.sort((a: any, b: any) => (a.adoptionFee || 0) - (b.adoptionFee || 0));
+      setPets(sorted);
     } catch {
-      // silent
+      setError("Failed to load pets. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -38,10 +47,11 @@ export default function AllPetsPage() {
 
   useEffect(() => {
     fetchPets();
-  }, [species]);
+  }, [species, sortBy]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!search.trim()) return;
     fetchPets();
   };
 
@@ -65,38 +75,66 @@ export default function AllPetsPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <Button type="submit" variant="plastic">Search</Button>
+          <Button type="submit" variant="plastic" disabled={!search.trim()}>Search</Button>
         </form>
 
-        <Select value={species} onValueChange={(v) => setSpecies(v || "all")}>
-          <SelectTrigger className="w-full sm:w-44">
-            <SlidersHorizontal className="h-4 w-4 mr-2" />
-            <SelectValue placeholder="Filter species" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Species</SelectItem>
-            <SelectItem value="Dog">Dog</SelectItem>
-            <SelectItem value="Cat">Cat</SelectItem>
-            <SelectItem value="Bird">Bird</SelectItem>
-            <SelectItem value="Rabbit">Rabbit</SelectItem>
-            <SelectItem value="Fish">Fish</SelectItem>
-            <SelectItem value="Hamster">Hamster</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex gap-3">
+          <Select value={species} onValueChange={(v) => setSpecies(v || "all")}>
+            <SelectTrigger className="w-full sm:w-40">
+              <SlidersHorizontal className="h-4 w-4 mr-2" />
+              <SelectValue placeholder="Species" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Species</SelectItem>
+              <SelectItem value="Dog">Dog</SelectItem>
+              <SelectItem value="Cat">Cat</SelectItem>
+              <SelectItem value="Bird">Bird</SelectItem>
+              <SelectItem value="Rabbit">Rabbit</SelectItem>
+              <SelectItem value="Fish">Fish</SelectItem>
+              <SelectItem value="Hamster">Hamster</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={sortBy} onValueChange={(v) => setSortBy(v || "newest")}>
+            <SelectTrigger className="w-full sm:w-36">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Newest</SelectItem>
+              <SelectItem value="name">Name A-Z</SelectItem>
+              <SelectItem value="age_asc">Youngest</SelectItem>
+              <SelectItem value="age_desc">Oldest</SelectItem>
+              <SelectItem value="fee_low">Lowest Fee</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
+
+      {/* Search hint */}
+      {search.trim() && !loading && (
+        <p className="text-sm text-muted-foreground mb-4">
+          Showing results for &quot;{search.trim()}&quot;
+          {species !== "all" && ` in ${species}`}
+          <button
+            onClick={() => { setSearch(""); setSpecies("all"); fetchPets(); }}
+            className="ml-2 text-primary hover:underline text-xs"
+          >
+            Clear filters
+          </button>
+        </p>
+      )}
 
       {loading ? (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="rounded-xl border bg-card animate-pulse">
-              <div className="aspect-[4/3] bg-muted rounded-t-xl" />
-              <div className="p-4 space-y-3">
-                <div className="h-5 bg-muted rounded w-2/3" />
-                <div className="h-4 bg-muted rounded w-1/2" />
-                <div className="h-4 bg-muted rounded w-3/4" />
-              </div>
-            </div>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <PetCardSkeleton key={i} />
           ))}
+        </div>
+      ) : error ? (
+        <div className="text-center py-20">
+          <AlertCircle className="h-12 w-12 mx-auto text-destructive/50 mb-4" />
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <Button variant="plastic" onClick={fetchPets}>Try Again</Button>
         </div>
       ) : pets.length > 0 ? (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -105,8 +143,25 @@ export default function AllPetsPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16">
-          <p className="text-muted-foreground text-lg">No pets found matching your criteria.</p>
+        <div className="text-center py-20">
+          <div className="relative inline-block mb-6">
+            <PawPrint className="h-16 w-16 text-muted-foreground/20" />
+            <Search className="absolute -bottom-1 -right-1 h-6 w-6 text-muted-foreground/30" />
+          </div>
+          <h3 className="text-lg font-semibold mb-2">No pets found</h3>
+          <p className="text-muted-foreground text-sm max-w-sm mx-auto mb-6">
+            {search.trim() || species !== "all"
+              ? "No pets match your search criteria. Try different keywords or filters."
+              : "There are no pets listed yet. Check back soon!"}
+          </p>
+          {(search.trim() || species !== "all") && (
+            <Button
+              variant="plastic"
+              onClick={() => { setSearch(""); setSpecies("all"); setSortBy("newest"); }}
+            >
+              Reset Filters
+            </Button>
+          )}
         </div>
       )}
     </div>

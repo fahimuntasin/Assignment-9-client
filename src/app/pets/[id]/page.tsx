@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ImageWithFallback from "@/components/ImageWithFallback";
 import {
   MapPin,
   Heart,
@@ -30,6 +31,7 @@ export default function PetDetailsPage() {
   const [pickupDate, setPickupDate] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const fetchPet = async () => {
@@ -55,6 +57,8 @@ export default function PetDetailsPage() {
       toast.error("Please select a pickup date");
       return;
     }
+
+    setFormErrors({});
 
     setSubmitting(true);
     try {
@@ -104,7 +108,7 @@ export default function PetDetailsPage() {
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <div className="rounded-2xl overflow-hidden mb-6">
-            <img
+            <ImageWithFallback
               src={pet.image}
               alt={pet.name}
               className="w-full aspect-[16/10] object-cover"
@@ -183,15 +187,17 @@ export default function PetDetailsPage() {
                     <Label>Your Email</Label>
                     <Input value={user?.email || ""} readOnly />
                   </div>
-                  <div className="space-y-2">
+                    <div className="space-y-2">
                     <Label htmlFor="pickupDate">Pickup Date *</Label>
                     <Input
                       id="pickupDate"
                       type="date"
                       value={pickupDate}
-                      onChange={(e) => setPickupDate(e.target.value)}
+                      onChange={(e) => { setPickupDate(e.target.value); setFormErrors({}); }}
+                      className={formErrors.pickupDate ? "border-destructive" : ""}
                       required
                     />
+                    {formErrors.pickupDate && <p className="text-xs text-destructive">{formErrors.pickupDate}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="message">Message</Label>
