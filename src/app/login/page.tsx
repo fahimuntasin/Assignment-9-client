@@ -39,8 +39,10 @@ export default function LoginPage() {
       return;
     }
 
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "1009595917225-f9tn17amnhnq7gk76tegp98h6jshk4h7.apps.googleusercontent.com";
+
     const tokenClient = client.oauth2.initTokenClient({
-      client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
+      client_id: clientId,
       scope: "email profile",
       callback: async (response: any) => {
         if (response.error) return;
