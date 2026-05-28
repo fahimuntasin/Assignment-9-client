@@ -40,12 +40,25 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+function storeToken(data: any) {
+  if (data.token) {
+    localStorage.setItem("token", data.token);
+    delete data.token;
+  }
+  return data;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    checkAuth();
+    const token = localStorage.getItem("token");
+    if (token) {
+      checkAuth();
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const checkAuth = async () => {
@@ -53,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data } = await api.get("/auth/me");
       setUser(data);
     } catch {
+      localStorage.removeItem("token");
       setUser(null);
     } finally {
       setLoading(false);
@@ -61,6 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const { data } = await api.post("/auth/login", { email, password });
+    storeToken(data);
     setUser(data);
     toast.success("Logged in successfully");
   };
@@ -72,6 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     googleId: string;
   }) => {
     const { data } = await api.post("/auth/google", googleData);
+    storeToken(data);
     setUser(data);
     toast.success("Logged in with Google");
   };
@@ -84,12 +100,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     confirmPassword: string;
   }) => {
     const { data } = await api.post("/auth/register", registerData);
+    storeToken(data);
     setUser(data);
     toast.success("Account created successfully");
   };
 
   const logout = async () => {
     await api.post("/auth/logout");
+    localStorage.removeItem("token");
     setUser(null);
     toast.success("Logged out");
   };
