@@ -19,6 +19,8 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-destructive-foreground shadow-[0_1px_0_0_rgba(0,0,0,0.05),0_-1px_0_0_rgba(255,255,255,0.1)_inset] hover:bg-destructive/90 active:shadow-none",
         link: "text-primary underline-offset-4 hover:underline",
+        plastic:
+          "relative overflow-hidden bg-gradient-to-b from-emerald-400 via-emerald-500 to-emerald-600 text-white shadow-[0_4px_12px_rgba(22,163,74,0.4),0_1px_0_rgba(255,255,255,0.2)_inset,0_-2px_0_rgba(0,0,0,0.15)_inset] hover:shadow-[0_6px_20px_rgba(22,163,74,0.5),0_1px_0_rgba(255,255,255,0.25)_inset,0_-2px_0_rgba(0,0,0,0.15)_inset] hover:translate-y-[-1px] active:translate-y-[1px] active:shadow-[0_2px_6px_rgba(22,163,74,0.3),0_1px_0_rgba(255,255,255,0.1)_inset,0_-1px_0_rgba(0,0,0,0.2)_inset] before:pointer-events-none before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:translate-x-[-100%] before:skew-x-[-15deg] hover:before:animate-[shine-sweep_0.8s_ease-out]",
       },
       size: {
         default: "h-9 gap-2 px-4 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",

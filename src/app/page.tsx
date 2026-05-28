@@ -48,7 +48,7 @@ export default function HomePage() {
               </p>
               <div className="flex gap-4">
                 <Link href="/pets">
-                  <Button size="lg" className="gap-2">
+                  <Button variant="plastic" size="lg" className="gap-2">
                     <Heart className="h-5 w-5" />
                     Adopt Now
                   </Button>

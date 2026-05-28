@@ -19,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PawAdopt - Pet Adoption Platform",
   description: "Find your perfect furry companion. Browse pets available for adoption and give them a loving home.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
